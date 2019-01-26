@@ -23,7 +23,7 @@
 
 <div class="bg-amarillo contenedor sombra">
      <form id="contacto" action="#">
-          <p>Edite el Contacto</span> </p>
+          <p>Edite el Contacto </p>
 
           <?php include 'inc/layout/formulario.php'; ?>
      </form>

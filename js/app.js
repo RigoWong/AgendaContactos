@@ -1,5 +1,6 @@
 const formularioContactos = document.querySelector('#contacto'),
-listadoContactos = document.querySelector('#listado-contactos tbody');
+listadoContactos = document.querySelector('#listado-contactos tbody'), 
+inputBuscador = document.querySelector('#buscar');
 
  eventListeners();
 
@@ -10,8 +11,9 @@ function eventListeners() {
      if(listadoContactos) {
         listadoContactos.addEventListener('click', eliminarContacto);
    }
-   
-
+   // buscador
+   inputBuscador.addEventListener('input', buscarContactos);
+   numeroContactos();
 }
 
 function leerFormulario(e) {
@@ -117,7 +119,7 @@ function insertarBD(datos) {
      mostrarNotificacion('Contacto Creado Correctamente', 'correcto');
 
      // Actualizar el número
-      numeroContactos();
+     numeroContactos();
 }
 }
 
@@ -185,10 +187,13 @@ function eliminarContacto(e) {
                          e.target.parentElement.parentElement.parentElement.remove();
                          // mostrar Notificación
                               mostrarNotificacion('Contacto eliminado', 'correcto');
+
+                              numeroContactos();
                         }else {
                         // Mostramos una notificacion
                         mostrarNotificacion('Hubo un error...', 'error' );
                         }
+                        
                    }
               }
 
@@ -221,6 +226,21 @@ function mostrarNotificacion(mensaje, clase) {
 }
 
 
+/** Buscador de registros */
+function buscarContactos(e) {
+     const expresion = new RegExp(e.target.value, "i" );
+     registros = document.querySelectorAll('tbody tr');
+     
+     registros.forEach(registro => {
+          registro.style.display = 'none';
+          console.log(registro.childNodes[1].textContent.replace(/\s/g, " ").search(expresion) != -1 );
+          if(registro.childNodes[1].textContent.replace(/\s/g, " ").search(expresion) != -1 ){
+               registro.style.display = 'table-row';
+              }
+              numeroContactos();
+              
+     })
+}
 
 
 
@@ -248,34 +268,19 @@ function mostrarNotificacion(mensaje, clase) {
 
 
 
-// /** Buscador de registros */
-// function buscarContactos(e) {
-//     const expresion = new RegExp(e.target.value, "i" );
-//           registros = document.querySelectorAll('tbody tr');
+/** Muestra el número de Contactos */
+function numeroContactos() {
+     const totalContactos = document.querySelectorAll('tbody tr'),
+          contenedorNumero = document.querySelector('.total-contactos span');
 
-//           registros.forEach(registro => {
-//                registro.style.display = 'none';
+     let total = 0;
 
-//                if(registro.childNodes[1].textContent.replace(/\s/g, " ").search(expresion) != -1 ){
-//                     registro.style.display = 'table-row';
-//                }
-//                numeroContactos();
-//           })
-// }
+     totalContactos.forEach(contacto => {
+          if(contacto.style.display === '' || contacto.style.display === 'table-row'){
+               total++;
+          }
+     });
 
-// /** Muestra el número de Contactos */
-// function numeroContactos() {
-//      const totalContactos = document.querySelectorAll('tbody tr'),
-//           contenedorNumero = document.querySelector('.total-contactos span');
-
-//      let total = 0;
-
-//      totalContactos.forEach(contacto => {
-//           if(contacto.style.display === '' || contacto.style.display === 'table-row'){
-//                total++;
-//           }
-//      });
-
-//      // console.log(total);
-//      contenedorNumero.textContent = total;
-// }
+     // console.log(total);
+     contenedorNumero.textContent = total;
+}
